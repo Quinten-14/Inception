@@ -71,7 +71,8 @@ services:
         - NORMAL_MAIL=${NORMAL_EMAIL}
     restart: always
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     volumes:
       - wordpress:/var/www/html
     networks:
@@ -96,3 +97,9 @@ services:
       - inception
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
